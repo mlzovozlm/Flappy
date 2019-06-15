@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -46,7 +48,7 @@ public class control {
     //---------------------------------
     private final int moveLeft = 1;
     private final int chimneyDist = 200;
-    private final int chimneyGap = 60;
+    private final int chimneyGap = 100;
     private final int chimneyWidth = 50;
     private final int GAME_END = 0;
     private final int GAME_PLAY = 1;
@@ -90,6 +92,25 @@ public class control {
         });
     }
 
+    private void addKeyAction() {
+        screen.getGamePanel().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_UP) {
+                    bird.setLocation(bird.getX(), bird.getY() - screen.jumpHeight);
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+    }
+
     //---------------------------------here----------------------------------------
     public void addScreenResize() {
         screen.getGamePanel().addComponentListener(new ComponentListener() {
@@ -126,8 +147,7 @@ public class control {
         });
     }
     //-----------------------------------------------------------------------------
-    
-    
+
     public control() {
         GAME_STATE = GAME_END;
         screen = new screen();
@@ -158,33 +178,12 @@ public class control {
         addScreenResize();
         //-------------------------------------------------------------------------
         screen.repaint();
+        addKeyAction();
         addPauseAction();
         addSaveAction();
         initThread();
         birdThread.start();
         chimneyThread.start();
-        screen.getGamePanel().addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                bird.setLocation(bird.getX(), bird.getY() - screen.jumpHeight);
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-            }
-        });
     }
 
     public void BirdUpdate(int fallHeight) {
@@ -202,6 +201,7 @@ public class control {
             screen.getGamePanel().remove(btn);
             i.remove();
         }
+        bird.setLocation(100, screen.getGamePanel().getHeight() / 2);
         screen.getGamePanel().repaint();
     }
 
@@ -382,7 +382,7 @@ public class control {
     }
 
     private void setupFileChooser(JFileChooser chooser) {
-        
+
         // allow user choose file .txt
         chooser.addChoosableFileFilter(new FileFilter() {
             @Override
