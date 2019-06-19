@@ -58,6 +58,8 @@ public class control {
     private int score;
     private boolean flag;
     private JLabel bird;
+    private int centerY;
+    private int relativeBird;
 
     public void addPauseAction() {
         screen.getBtnPause().addActionListener(new ActionListener() {
@@ -116,9 +118,10 @@ public class control {
         screen.getGamePanel().addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
-                bird.setLocation(100, screen.getGamePanel().getHeight() / 2);
-                ceilY = bird.getY() - 150;
-                floorY = bird.getY() + 150;
+                centerY = screen.getGamePanel().getHeight() / 2;
+                bird.setLocation(100, centerY - relativeBird);
+                ceilY = centerY - 150;
+                floorY = centerY + 150;
                 ceil.setSize(screen.getGamePanel().getWidth(), ceilY);
                 ceil.setLocation(0, 0);
                 floor.setSize(screen.getGamePanel().getWidth(), screen.getGamePanel().getHeight() - floorY);
@@ -128,7 +131,7 @@ public class control {
                     if (i % 2 == 0) {
                         btn.setLocation(btn.getX(), ceilY);
                     } else {
-                        btn.setLocation(btn.getX(), floorY - chimneys.get(i).getHeight());
+                        btn.setLocation(btn.getX(), floorY - btn.getHeight());
                     }
                 }
             }
@@ -154,22 +157,23 @@ public class control {
         screen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         screen.setVisible(true);
         chimneys = new LinkedList<>();
+        centerY = screen.getGamePanel().getHeight() / 2;
         score = 0;
         flag = false;
         bird = new JLabel();
         bird.setSize(40, 40);
         screen.getGamePanel().add(bird);
-        bird.setLocation(100, screen.getGamePanel().getHeight() / 2);
+        bird.setLocation(100, centerY);
         bird.setVisible(true);
         bird.setBorder(new LineBorder(Color.BLACK, 1));
         //--------------------------------all--------------------------------------
         screen.getGamePanel().setMinimumSize(new Dimension(500, 320));
         screen.setMinimumSize(new Dimension(500, 500));
-        floorY = bird.getY() + 150;
+        floorY = centerY + 150;
         floor = new JButton();
         floor.setSize(screen.getGamePanel().getWidth(), screen.getGamePanel().getHeight() - floorY);
         floor.setLocation(0, ceilY);
-        ceilY = bird.getY() - 150;
+        ceilY = centerY - 150;
         ceil = new JButton();
         ceil.setSize(screen.getGamePanel().getWidth(), ceilY);
         ceil.setLocation(0, 0);
@@ -190,6 +194,7 @@ public class control {
         int posX = bird.getX();
         int posY = bird.getY();
         bird.setLocation(posX, posY + fallHeight);
+        relativeBird = centerY - bird.getY();
     }
 
     public void gameEnd() {
@@ -201,7 +206,8 @@ public class control {
             screen.getGamePanel().remove(btn);
             i.remove();
         }
-        bird.setLocation(100, screen.getGamePanel().getHeight() / 2);
+        centerY = screen.getGamePanel().getHeight() / 2;
+        bird.setLocation(100, centerY);
         screen.getGamePanel().repaint();
     }
 
